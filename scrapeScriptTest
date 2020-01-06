@@ -1,0 +1,59 @@
+#using urlopen as uReq
+#and bs4 as beautifulsoup
+
+import urllib.request
+from bs4 import BeautifulSoup as soup
+import csv
+
+#::::::ESTABLISH CONNECTION AND PULL HTML:::::::
+url = 'https://www.ae.com/us/en/c/women/tops/cat10049?pagetype=plp'
+#opening connection and grabbing page
+req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+
+#all the html on the page (12000 lines of code)
+page_html = urllib.request.urlopen(req).read()
+#close connection
+urllib.request.urlopen(req).close()
+#::::::END EXECUTION AFTER RECEIVE DATA:::::::::
+
+#parsed html markup
+page_soup = soup(page_html, "html.parser")
+
+#grab each product
+containers = page_soup.findAll("div", {"class" : "product-tile qa-product-tile __eadf2 ember-view col-md-3 col-xs-6"})
+container = containers[0]
+
+#writing to CSV file
+filename = "clothesScrapeProdcut.csv"
+f = open(filename, "w")
+headers = "product_name, retail price, sale price\n"
+f.write(headers)
+
+
+for container in containers:
+    #finding title and assigning to variable
+    title_container = container.findAll("h3", {"class" : "product-name"})
+    product_name = title_container[0].text.strip()
+
+    rPrice_container = container.findAll("div", {"class" : "product-list-price product-list-price-on-sale ember-view"})
+    product_retailPrice = rPrice_container[0].text
+
+    sPrice_container = container.findAll("div", {"class" : "product-sale-price ember-view"})
+    product_salePrice = sPrice_container[0].text
+
+    #writing to csv file
+    #f.write(product_name + ',' + product_retailPrice + ',' + sPrice_container + '\n')
+    #f.close
+
+    print("product: " + product_name)
+    print("retail price: " + product_retailPrice)
+    print("sale price: " + product_salePrice)
+
+    product_data = {
+        'name': product_name,
+        'retail price': product_retailPrice,
+        'sale price': product_salePrice
+        }
+
+
+
