@@ -1,0 +1,32 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_page(url):
+    response = requests.get(url)
+    print("Is the following is 200, you're good: ", response.status_code)
+
+    if not response.ok:
+        print('Server responded: ', response.status_code)
+    else:
+        soup = BeautifulSoup(response.text, 'lxml')
+        return soup
+
+def get_detail_data(soup):
+    #target all item containers on page
+    containers = page_soup.findAll("div", {"class" : "product-tile qa-product-tile __eadf2 ember-view col-md-3 col-xs-6"})
+    container = containers[0]
+    
+    #return product name
+    title_container = container.findAll("h3", {"class" : "product-name"})
+    product_name = title_container[0].text.strip()
+
+    #produce price
+
+def main():
+    url = 'https://www.ae.com/us/en/c/women/tops/cat10049?pagetype=plp'
+    get_page(url)
+
+    get_detail_data(get_page(url))
+
+
+    
